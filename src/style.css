@@ -1,0 +1,27 @@
+#chat {
+   border: solid 2px #000;
+   width: 60%;
+   height: 400px;
+   margin-top: 20px;
+   background-color: rgb(195, 230, 115);
+   overflow: hidden;
+   overflow-y: scroll;
+}
+.box {
+   display: flex;
+   justify-content: space-between;
+}
+.message-container {
+   display: flex;
+   background-color: chocolate;
+   margin: 5px;
+}
+#users {
+   border: solid 2px #000;
+   width: 30%;
+   height: 400px;
+   margin-top: 20px;
+   background-color: rgb(195, 230, 115);
+   overflow: hidden;
+   overflow-y: scroll;
+}
