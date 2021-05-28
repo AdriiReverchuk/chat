@@ -309,6 +309,8 @@ textarea {
 }
 .card-body {
    height: 241px !important;
+   overflow: hidden;
+   overflow-y: auto;
 }
 .bd-placeholder-img {
    font-size: 1.125rem;
