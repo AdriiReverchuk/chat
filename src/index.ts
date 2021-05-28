@@ -1,9 +1,24 @@
-// import { io } from "socket.io-client";
+import { io } from "socket.io-client";
 
-// const WS_URL = "ws://bt-21-playground-vppfc.ondigitalocean.app/";
+const WS_URL = "ws://bt-21-playground-vppfc.ondigitalocean.app/";
 
-// const socket = io(WS_URL);
-// const connectedUsers: Record<string, string> = {};
+const socket = io(WS_URL);
+const connectedUsers: Record<string, string> = {};
+const btnReg = document.getElementById("btn-reg");
+const chatContainer = document.getElementById("page-content");
+const registrationContainer = document.getElementById("block");
+let userName: string;
+btnReg.addEventListener("click", () => {
+   userName = (<HTMLInputElement>document.getElementById("floatingInput"))
+      .value;
+   console.log(userName);
+
+   registrationContainer.style.display = "none";
+   chatContainer.style.display = "block";
+});
+const addMessage = (userName: string, message: string): void => {
+   const date = new Date();
+};
 // socket.on("connect", () => {
 //    const chat = document.getElementById("chat");
 //    socket.on("new_message", (username, message) => {

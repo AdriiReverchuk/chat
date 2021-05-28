@@ -1,8 +1,9 @@
-.body {
+body {
    background-image: url("./img/paper-1074131_1920.jpg");
+   font-size: 1.2rem !important;
 }
 .card-bordered {
-   border: 1px solid #ebebeb;
+   border: 1px solid #cecece;
 }
 
 .card {
@@ -45,7 +46,7 @@ body {
 }
 
 h4.card-title {
-   font-size: 17px;
+   font-size: 1.2rem !important;
 }
 
 .card-header > *:last-child {
@@ -305,4 +306,28 @@ textarea {
 
 .text-info {
    color: #48b0f7 !important;
+}
+.card-body {
+   height: 241px !important;
+}
+.bd-placeholder-img {
+   font-size: 1.125rem;
+   text-anchor: middle;
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   user-select: none;
+}
+#page-content {
+   display: none;
+}
+#block {
+   display: flex;
+   justify-content: center;
+   height: 100vh;
+   margin-top: 100px;
+}
+@media (min-width: 768px) {
+   .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+   }
 }
