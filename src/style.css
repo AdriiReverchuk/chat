@@ -1,3 +1,6 @@
+.body {
+   background-image: url("./img/paper-1074131_1920.jpg");
+}
 .card-bordered {
    border: 1px solid #ebebeb;
 }
