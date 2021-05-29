@@ -308,7 +308,7 @@ textarea {
    color: #48b0f7 !important;
 }
 .card-body {
-   height: 241px !important;
+   height: 244px !important;
    overflow: hidden;
    overflow-y: auto;
 }
@@ -327,6 +327,9 @@ textarea {
    justify-content: center;
    height: 100vh;
    margin-top: 100px;
+}
+.meta {
+   color: grey !important;
 }
 @media (min-width: 768px) {
    .bd-placeholder-img-lg {
