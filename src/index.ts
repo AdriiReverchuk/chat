@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 export interface Users {
    key: string;
 }
-let allUsers: string[];
+let allUsers: Users;
 
 const WS_URL = "ws://bt-21-playground-vppfc.ondigitalocean.app/";
 
@@ -25,10 +25,9 @@ if (userName !== undefined) {
 }
 socket.on("connect", () => {
    socket.on("users_list", (users: Users) => {
-      allUsers = Object.keys(users);
-      console.log(users);
-      console.log(allUsers);
-      allUsers.forEach((key) => {
+      const userList = Object.keys(users);
+      allUsers = users;
+      userList.forEach((key) => {
          const allUsersContainer = document.getElementById("all-users");
          const registeredUsersContainer =
             document.getElementById("registered-users");
@@ -58,25 +57,50 @@ socket.on("connect", () => {
       console.log(`${socketId} connected`);
    });
    socket.on("user_registered", (username, socketId) => {
+      Object.defineProperty(allUsers, socketId, {
+         value: username,
+         configurable: true,
+         writable: true,
+         enumerable: true,
+      });
+      console.log(allUsers);
+
       console.log(`${socketId} registered as ${username}`);
    });
-   socket.on("new_message", (message, socketId, name) => {
-      console.log(name);
-
-      addMessage(socketId, message, false);
-      socket.on("users_list", (users: Users) => {
-         allUsers = Object.keys(users);
-         allUsers.forEach((key) => {
-            if (key === socketId) {
-               const nick = users[key];
-               const blockName = document.getElementById("block-name");
-               const nickString = document.createElement("p");
-               nickString.textContent = nick;
-               blockName.append(nickString);
-               console.log(socketId);
-            }
-         });
+   socket.on("new_message", (message, socketId) => {
+      const users = Object.keys(allUsers);
+      const chatContent = document.getElementById("chat-content");
+      const date = new Date();
+      const containerChat = document.createElement("div");
+      containerChat.classList.add("media", "media-chat");
+      const img = document.createElement("img");
+      const block = document.createElement("div");
+      block.style.display = "flex";
+      block.style.flexDirection = "row-reverse";
+      block.style.justifyContent = "flex-end";
+      img.classList.add("avatar");
+      img.src = "https://img.icons8.com/color/36/000000/administrator-male.png";
+      users.forEach((key) => {
+         if (key === socketId) {
+            const nick = allUsers[key];
+            const nickString = document.createElement("p");
+            nickString.textContent = nick;
+            block.append(nickString);
+            console.log(socketId);
+         }
       });
+      block.append(img);
+      const mediaBody = document.createElement("div");
+      mediaBody.classList.add("media-body");
+      const text = document.createElement("p");
+      text.textContent = message;
+      const meta = document.createElement("p");
+      meta.classList.add("meta");
+      meta.textContent = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+      mediaBody.append(text, meta);
+      containerChat.append(block, mediaBody);
+      chatContent.append(containerChat);
+
       console.log(`Message from ${socketId}: ${message}`);
    });
 });
@@ -107,25 +131,6 @@ const addMessage = (
       containerChat.append(mediaBody);
       chatContent.append(containerChat);
       socket.emit("send_message", `${userName}`, `${text}`);
-   } else {
-      const containerChat = document.createElement("div");
-      containerChat.classList.add("media", "media-chat");
-      const img = document.createElement("img");
-      const block = document.createElement("div");
-      block.id = "block-name";
-      block.append(img);
-      img.classList.add("avatar");
-      img.src = "https://img.icons8.com/color/36/000000/administrator-male.png";
-      const mediaBody = document.createElement("div");
-      mediaBody.classList.add("media-body");
-      const text = document.createElement("p");
-      text.textContent = message;
-      const meta = document.createElement("p");
-      meta.classList.add("meta");
-      meta.textContent = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-      mediaBody.append(text, meta);
-      containerChat.append(block, mediaBody);
-      chatContent.append(containerChat);
    }
 };
 const btnSend = document.getElementById("btn-send");
@@ -137,50 +142,3 @@ btnSend.addEventListener("click", (event: Event) => {
    event.preventDefault();
    input.value = " ";
 });
-// const time = (): void => {
-//    const date = new Date();
-//    let hours = date.getHours();
-//    hours<=10 ?  `hours.toString()`
-// };
-// socket.on("connect", () => {
-//    const chat = document.getElementById("chat");
-//    socket.on("new_message", (username, message) => {
-//       const date = new Date();
-//       const messageContainer = document.createElement("div");
-//       messageContainer.classList.add("message-container");
-//       const userContainer = document.createElement("p");
-//       const messageText = document.createElement("p");
-//       userContainer.textContent =
-//          date.getHours() + ":" + date.getMinutes() + " " + username + " :";
-//       messageText.textContent = message;
-//       messageContainer.append(userContainer, messageText);
-//       chat.append(messageContainer);
-//       console.log(`${username} ${message}`);
-//    });
-//    socket.on("new_message", (username, message, userId) => {
-//       connectedUsers[userId] = username;
-//       console.log(userId);
-//    });
-//    socket.emit("get_users");
-//    socket.on("user_list", (users) => {
-//       console.log("active users", users);
-//    });
-// });
-
-// const name: string = "Andrii";
-// const btn = document.getElementById("btn");
-// btn.addEventListener("click", () => {
-//    const date = new Date();
-//    const text = (<HTMLInputElement>document.getElementById("message")).value;
-//    const chat = document.getElementById("chat");
-//    const messageContainer = document.createElement("div");
-//    messageContainer.classList.add("message-container");
-//    const userContainer = document.createElement("p");
-//    const messageText = document.createElement("p");
-//    userContainer.textContent =
-//       date.getHours() + ":" + date.getMinutes() + " " + name + " : ";
-//    messageText.textContent = text;
-//    messageContainer.append(userContainer, messageText);
-//    chat.append(messageContainer);
-//    socket.emit("send_message", `${name}`, `${text}`);
-// });
