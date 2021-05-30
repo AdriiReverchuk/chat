@@ -17,7 +17,6 @@ btnReg.addEventListener("click", () => {
    userName = (<HTMLInputElement>document.getElementById("floatingInput"))
       .value;
    console.log(userName);
-
    registrationContainer.style.display = "none";
    chatContainer.style.display = "block";
 });
@@ -37,7 +36,7 @@ socket.on("connect", () => {
          userString.classList.add("card-text");
          userString.textContent = `Name: ${users[key]}, id: ${key}`;
          allUsersContainer.append(userString);
-         if (users[key] !== "Anonimus") {
+         if (users[key] !== "Anonymous") {
             const userStringSecond = document.createElement("p");
             userStringSecond.classList.add("card-text");
             userStringSecond.textContent = `Name: ${users[key]}, id: ${key}`;
@@ -61,8 +60,23 @@ socket.on("connect", () => {
    socket.on("user_registered", (username, socketId) => {
       console.log(`${socketId} registered as ${username}`);
    });
-   socket.on("new_message", (message, socketId) => {
+   socket.on("new_message", (message, socketId, name) => {
+      console.log(name);
+
       addMessage(socketId, message, false);
+      socket.on("users_list", (users: Users) => {
+         allUsers = Object.keys(users);
+         allUsers.forEach((key) => {
+            if (key === socketId) {
+               const nick = users[key];
+               const blockName = document.getElementById("block-name");
+               const nickString = document.createElement("p");
+               nickString.textContent = nick;
+               blockName.append(nickString);
+               console.log(socketId);
+            }
+         });
+      });
       console.log(`Message from ${socketId}: ${message}`);
    });
 });
@@ -97,17 +111,20 @@ const addMessage = (
       const containerChat = document.createElement("div");
       containerChat.classList.add("media", "media-chat");
       const img = document.createElement("img");
+      const block = document.createElement("div");
+      block.id = "block-name";
+      block.append(img);
       img.classList.add("avatar");
       img.src = "https://img.icons8.com/color/36/000000/administrator-male.png";
       const mediaBody = document.createElement("div");
-      containerChat.classList.add("media-body ");
+      mediaBody.classList.add("media-body");
       const text = document.createElement("p");
       text.textContent = message;
       const meta = document.createElement("p");
       meta.classList.add("meta");
       meta.textContent = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
       mediaBody.append(text, meta);
-      containerChat.append(img, mediaBody);
+      containerChat.append(block, mediaBody);
       chatContent.append(containerChat);
    }
 };
@@ -120,6 +137,11 @@ btnSend.addEventListener("click", (event: Event) => {
    event.preventDefault();
    input.value = " ";
 });
+// const time = (): void => {
+//    const date = new Date();
+//    let hours = date.getHours();
+//    hours<=10 ?  `hours.toString()`
+// };
 // socket.on("connect", () => {
 //    const chat = document.getElementById("chat");
 //    socket.on("new_message", (username, message) => {
